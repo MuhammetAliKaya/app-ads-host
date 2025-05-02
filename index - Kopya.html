@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Idle Primitive Life - Lead Your Tribe & Build a Thriving Civilization</title>
+    <style>
+        :root {
+            --primary: #e0922a;
+            --primary-dark: #a66c1f;
+            --secondary: #4a3519;
+            --accent: #558b2f;
+            --background: #111111;
+            --text: #ffffff;
+            --section-bg: rgba(0, 0, 0, 0.7);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Background Container with Zoom Effect */
+        .bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .bg-image {
+            position: absolute;
+            top: -10%;
+            left: -10%;
+            width: 120%;
+            height: 120%;
+            background-size: cover;
+            background-position: center;
+            transition: background-image 1s ease, opacity 1s ease;
+            animation: zoomInOutEffect 25s infinite alternate ease-in-out;
+        }
+
+        @keyframes zoomInOutEffect {
+            0% {
+                transform: scale(1.2);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1.15);
+            }
+        }
+
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: floatParticle linear infinite;
+        }
+
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+
+            20% {
+                opacity: 0.5;
+            }
+
+            80% {
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: translateY(-100px) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        /* Ateþ partikül efekti */
+        .fire-particle {
+            position: absolute;
+            background: radial-gradient(circle, rgba(255, 165, 0, 0.8) 0%, rgba(255, 69, 0, 0.4) 70%, rgba(255, 0, 0, 0) 100%);
+            border-radius: 50%;
+            animation: fireFloat linear infinite;
+        }
+
+        @keyframes fireFloat {
+            0% {
+                transform: translateY(120vh) translateX(0) scale(1);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 0.8;
+            }
+
+            90% {
+                opacity: 0.6;
+            }
+
+            100% {
+                transform: translateY(-20vh) translateX(var(--end-x)) scale(0.2);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo img {
+            height: 40px;
+            width: auto;
+        }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            padding-top: 80px;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            background-color: var(--section-bg);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+            position: relative;
+        }
+
+        .app-logo-corner {
+            position: absolute;
+            top: -25px;
+            left: -25px;
+            width: 80px;
+            height: 80px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            animation: pulse 3s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            }
+
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 8px 25px rgba(224, 146, 42, 0.5);
+            }
+
+            100% {
+                transform: scale(1);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            }
+        }
+
+        h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .tagline {
+            font-size: 24px;
+            margin-bottom: 30px;
+        }
+
+        a img {
+            transition: transform 0.3s ease;
+        }
+
+        a img:hover {
+            transform: translateY(-2px);
+        }
+
+        .section {
+            padding: 100px 0;
+            position: relative;
+        }
+
+        .section:nth-child(odd) {
+            background-color: rgba(20, 20, 20, 0.9);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            color: var(--primary);
+            font-size: 36px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        /* Small floating logo for each feature card */
+        .feature-logo {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-card {
+            background-color: var(--section-bg);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            position: relative;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .feature-title {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .screenshots {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 50px;
+        }
+
+        .screenshot {
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .screenshot:hover {
+            transform: scale(1.05);
+        }
+
+        .screenshot img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .cta {
+            text-align: center;
+            background-color: var(--section-bg);
+            padding: 80px 0;
+            border-radius: 20px;
+            margin-top: 50px;
+            backdrop-filter: blur(5px);
+            position: relative;
+        }
+
+        .logo-floating {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo-top-right {
+            top: -20px;
+            right: -20px;
+            animation: float-right 6s ease-in-out infinite;
+        }
+
+        .logo-bottom-left {
+            bottom: -20px;
+            left: -20px;
+            animation: float-left 7s ease-in-out infinite;
+        }
+
+        @keyframes float-right {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-15px) rotate(10deg);
+            }
+        }
+
+        @keyframes float-left {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(15px) rotate(-10deg);
+            }
+        }
+
+        .cta h2 {
+            font-size: 36px;
+            margin-bottom: 30px;
+            color: var(--primary);
+        }
+
+        footer {
+            padding: 40px 0;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.9);
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .footer-link {
+            color: var(--text);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: var(--primary);
+        }
+
+        .footer-logo {
+            display: block;
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .copyright {
+            color: #777;
+        }
+
+        /* Animated elements */
+        .animated-element {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .animated-element.in-view {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Ekstra parlaklýk efekti */
+        .glow {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(224, 146, 42, 0.8) 0%, rgba(224, 146, 42, 0.1) 70%, rgba(224, 146, 42, 0) 100%);
+            animation: glowPulse 6s infinite;
+        }
+
+        @keyframes glowPulse {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.3;
+            }
+
+            50% {
+                transform: scale(1);
+                opacity: 0.7;
+            }
+
+            100% {
+                transform: scale(0.8);
+                opacity: 0.3;
+            }
+        }
+
+        /* Floating effect for background elements */
+        .float-effect {
+            animation: floatingEffect 8s ease-in-out infinite;
+            animation-delay: calc(var(--delay, 0) * 1s);
+        }
+
+        @keyframes floatingEffect {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 36px;
+            }
+
+            .tagline {
+                font-size: 20px;
+            }
+
+            .section {
+                padding: 60px 0;
+            }
+
+            .section-title {
+                font-size: 28px;
+            }
+
+            .feature-card {
+                padding: 20px;
+            }
+
+            .cta {
+                padding: 60px 0;
+            }
+
+            .cta h2 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Animasyonlu Arka Plan -->
+    <div class="bg-container">
+        <div class="bg-image" id="bgImage"></div>
+    </div>
+    <div class="particles" id="particles"></div>
+
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <img src="app_logo.png" alt="Idle Primitive Game Logo">
+                Idle Primitive Game
+            </div>
+            <a href="https://play.google.com/store/apps/details?id=com.RMcompany.PrimitiveGame">
+                <img src="PS.png" alt="Get it on Google Play" style="height: 60px;">
+            </a>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container hero-content animated-element">
+            <img src="app_logo.png" alt="Idle Primitive Game Logo" class="app-logo-corner">
+            <h1>&#x1F525; IDLE PRIMITIVE GAME &#x1F525;</h1>
+            <p class="tagline">Lead Your Tribe & Build a Thriving Civilization in this Prehistoric Adventure!</p>
+            <a href="https://play.google.com/store/apps/details?id=com.RMcompany.PrimitiveGame">
+                <img src="PS.png" alt="Get it on Google Play" style="height: 80px;">
+            </a>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title animated-element">GAME FEATURES</h2>
+            <div class="features-grid">
+                <div class="feature-card animated-element">
+                    <!-- <img src="app_logo.png" alt="Idle Primitive Game Logo" class="feature-logo"> -->
+                    <div class="feature-icon">&#x1FA93;</div>
+                    <h3 class="feature-title">Resource Management</h3>
+                    <p>Collect wood, meat, stone, and fruit. Automate your tribe's work and optimize productivity.</p>
+                </div>
+                <div class="feature-card animated-element">
+                    <!-- <img src="app_logo.png" alt="Idle Primitive Game Logo" class="feature-logo"> -->
+                    <div class="feature-icon">&#x1F3D5;&#xFE0F;</div>
+                    <h3 class="feature-title">Tribe Expansion</h3>
+                    <p>Build shelters, farms, and workshops. Grow your small village into a thriving prehistoric city.
+                    </p>
+                </div>
+                <div class="feature-card animated-element">
+                    <!-- <img src="app_logo.png" alt="Idle Primitive Game Logo" class="feature-logo"> -->
+                    <div class="feature-icon">&#x1F43E;</div>
+                    <h3 class="feature-title">Tame Wild Pets</h3>
+                    <p>Catch ancient creatures, tame them, and unlock their unique powers to boost your tribe.</p>
+                </div>
+                <div class="feature-card animated-element">
+                    <!-- <img src="app_logo.png" alt="Idle Primitive Game Logo" class="feature-logo"> -->
+                    <!-- <div class="feature-icon">&#x1FA99;</div> -->
+                    <div class="feature-icon">&#x1F4B0;</div>
+                    <h3 class="feature-title">Ancient Treasures</h3>
+                    <p>Find chests filled with rare rewards, powerful tools, and mystery artifacts.</p>
+                </div>
+                <div class="feature-card animated-element">
+                    <!-- <img src="app_logo.png" alt="Idle Primitive Game Logo" class="feature-logo"> -->
+                    <div class="feature-icon">&#x1F32A;&#xFE0F;</div>
+                    <h3 class="feature-title">Survive Disasters</h3>
+                    <p>Prepare your people for earthquakes, floods, wild animal attacks, and other hazards.</p>
+                </div>
+                <div class="feature-card animated-element">
+                    <!-- <img src="app_logo.png" alt="Idle Primitive Game Logo" class="feature-logo"> -->
+                    <div class="feature-icon">&#x1F528;</div>
+                    <h3 class="feature-title">Crafting System</h3>
+                    <p>Collect materials and craft tools, weapons, and buildings crucial for survival and development.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <!-- Bu bölüm için parlaklýk efekti -->
+        <div class="glow" style="left: 30%; top: 50%; width: 400px; height: 400px;"></div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title animated-element">GAMEPLAY PREVIEW</h2>
+            <div class="screenshots">
+                <div class="screenshot animated-element">
+                    <img src="CHESTS.png" alt="Satisfying Chests - Find rare treasures and rewards" />
+                </div>
+                <div class="screenshot animated-element">
+                    <img src="EVENTANDQUEST.png" alt="Events & Quests - Complete missions for special rewards" />
+                </div>
+                <div class="screenshot animated-element">
+                    <img src="GATHER.png" alt="Gathering - Collect resources to grow your civilization" />
+                </div>
+                <div class="screenshot animated-element">
+                    <img src="HUNT.png" alt="Hunting - Hunt wild animals to provide for your tribe" />
+                </div>
+            </div>
+
+            <div class="screenshots">
+                <div class="screenshot animated-element">
+                    <img src="PET.png" alt="Various pets - Tame wild animals to help your tribe" />
+                </div>
+                <div class="screenshot animated-element">
+                    <img src="TECHTREE.png" alt="Tech Tree - Unlock advanced technologies to evolve" />
+                </div>
+            </div>
+
+            <div class="cta animated-element">
+                <img src="app_logo.png" alt="Idle Primitive Game Logo" class="logo-floating logo-top-right">
+                <img src="app_logo.png" alt="Idle Primitive Game Logo" class="logo-floating logo-bottom-left">
+                <h2>Begin Your Prehistoric Adventure Today!</h2>
+                <p style="margin-bottom: 30px;">Build, survive, evolve, and become the legendary founder of the greatest
+                    prehistoric civilization!</p>
+                <a href="https://play.google.com/store/apps/details?id=com.RMcompany.PrimitiveGame">
+                    <img src="PS.png" alt="Get it on Google Play" style="height: 80px;">
+                </a>
+            </div>
+        </div>
+        <!-- Bu bölüm için parlaklýk efekti -->
+        <div class="glow" style="right: 10%; bottom: 20%; width: 300px; height: 300px;"></div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <img src="app_logo.png" alt="Idle Primitive Game Logo" class="footer-logo">
+            <div class="footer-links">
+                <a href="#" class="footer-link">Privacy Policy</a>
+                <a href="#" class="footer-link">Terms of Service</a>
+                <a href="#" class="footer-link">Contact Us</a>
+            </div>
+            <p class="copyright">© 2025 RM Company. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Background images array
+        const backgroundImages = [
+            'bg.jpg',
+            'bg1.png',
+            'bg2.png',
+            'bg3.png',
+            'bg4.png',
+        ];
+
+        // Current background index
+        let currentBgIndex = 0;
+
+        // Set initial background
+        document.getElementById('bgImage').style.backgroundImage = `url('${backgroundImages[currentBgIndex]}')`;
+
+        // Change background every 5 seconds
+        setInterval(() => {
+            currentBgIndex = (currentBgIndex + 1) % backgroundImages.length;
+            const bgElement = document.getElementById('bgImage');
+
+            // Fade out current image
+            bgElement.style.opacity = '0';
+
+            // After transition, change image and fade back in
+            setTimeout(() => {
+                bgElement.style.backgroundImage = `url('${backgroundImages[currentBgIndex]}')`;
+                bgElement.style.opacity = '1';
+            }, 500);
+        }, 5000);
+
+        // Add floating effect to various elements
+        document.addEventListener('DOMContentLoaded', function () {
+            // Select some elements to add floating effect
+            const featureCards = document.querySelectorAll('.feature-card');
+            featureCards.forEach((card, index) => {
+                card.classList.add('float-effect');
+                card.style.setProperty('--delay', index * 0.5);
+            });
+
+            // Add floating effect to glow elements
+            const glowElements = document.querySelectorAll('.glow');
+            glowElements.forEach((glow, index) => {
+                glow.classList.add('float-effect');
+                glow.style.setProperty('--delay', index * 1.5);
+            });
+        });
+
+        // Animated background particles
+        document.addEventListener('DOMContentLoaded', function () {
+            // Standart parçacýklar için
+            const particlesContainer = document.getElementById('particles');
+            const numberOfParticles = window.innerWidth / 15; // Ekran geniþliðine göre parçacýk sayýsý
+
+            for (let i = 0; i < numberOfParticles; i++) {
+                createParticle(particlesContainer);
+
+                // Ateþ parçacýklarýný da ekleyelim
+                if (i % 3 === 0) { // Her 3 parçacýktan biri ateþ olsun
+                    createFireParticle(particlesContainer);
+                }
+            }
+
+            // Animated elements
+            const animatedElements = document.querySelectorAll('.animated-element');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('in-view');
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            animatedElements.forEach(element => {
+                observer.observe(element);
+            });
+
+            // Ekraný yeniden boyutlandýrma sýrasýnda parçacýklarý güncelle
+            window.addEventListener('resize', function () {
+                // Mevcut parçacýklarý temizle
+                particlesContainer.innerHTML = '';
+
+                // Yeni parçacýklar oluþtur
+                const newNumberOfParticles = window.innerWidth / 15;
+                for (let i = 0; i < newNumberOfParticles; i++) {
+                    createParticle(particlesContainer);
+                    if (i % 3 === 0) {
+                        createFireParticle(particlesContainer);
+                    }
+                }
+            });
+        });
+
+        // Normal parçacýk oluþturma fonksiyonu
+        function createParticle(container) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+
+            // Rastgele boyut ve pozisyon
+            const size = Math.random() * 5 + 2;
+            const posX = Math.random() * 100;
+
+            // Rastgele animasyon süresi
+            const duration = Math.random() * 30 + 20;
+
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${posX}%`;
+            particle.style.animationDuration = `${duration}s`;
+            particle.style.animationDelay = `${Math.random() * duration}s`;
+
+            container.appendChild(particle);
+        }
+
+        // Ateþ parçacýðý oluþturma fonksiyonu
+        function createFireParticle(container) {
+            const fireParticle = document.createElement('div');
+            fireParticle.classList.add('fire-particle');
+
+            // Rastgele boyut ve pozisyon
+            const size = Math.random() * 30 + 10;
+            const posX = Math.random() * 100;
+            const endX = (Math.random() - 0.5) * 200; // Rastgele X-yönü hareketi
+
+            // Rastgele animasyon süresi
+            const duration = Math.random() * 10 + 5;
+
+            fireParticle.style.width = `${size}px`;
+            fireParticle.style.height = `${size}px`;
+            fireParticle.style.left = `${posX}%`;
+            fireParticle.style.animationDuration = `${duration}s`;
+            fireParticle.style.animationDelay = `${Math.random() * 5}s`;
+            fireParticle.style.setProperty('--end-x', `${endX}px`);
+
+            container.appendChild(fireParticle);
+
+            // Animasyon bitince yeniden oluþtur
+            setTimeout(() => {
+                container.removeChild(fireParticle);
+                createFireParticle(container);
+            }, (duration + parseFloat(fireParticle.style.animationDelay)) * 1000);
+        }
+    </script>
+</body>
+
+</html>
